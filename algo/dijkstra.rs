@@ -76,7 +76,13 @@ fn dijkstra(graph: &Vec<Vertex>, start: usize, end: usize) -> Option<(usize, Vec
 
     // Return the shortest distance to the end vertex
     match distances.get(&end) {
-        Some(&distance) => Some((distance, path)),
+        Some(&distance) => {
+            if distance != usize::MAX {
+                Some((distance, path))
+            } else {
+                None
+            }
+        }
         None => None,
     }
 }
@@ -108,15 +114,31 @@ fn read_graph_from_file(filename: &str) -> Vec<Vertex> {
     graph
 }
 
+// Function to read user input
+fn read_input(prompt: &str) -> usize {
+    loop {
+        println!("{}", prompt);
+
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read line");
+
+        match input.trim().parse() {
+            Ok(value) => return value,
+            Err(_) => println!("Invalid input. Please enter a valid number."),
+        }
+    }
+}
+
 fn main() {
-    // Replace with your file path
+    // File path
     let filename = "../shared/graph_input.txt";
 
     let graph = read_graph_from_file(filename);
 
-    // Replace with your source and target vertices
-    let start = 0;
-    let end = 3;
+    let start: usize = read_input("Enter the start vertex: ");
+    let end: usize = read_input("Enter the start vertex: ");
 
     match dijkstra(&graph, start, end) {
         Some((distance, path)) => {
